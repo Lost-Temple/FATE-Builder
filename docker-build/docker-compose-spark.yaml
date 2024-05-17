@@ -1,0 +1,33 @@
+version: "3"
+
+services:
+  spark-master:
+    hostname: spark-master
+    image: ${IMAGE_PREFIX}/spark-master:${IMAGE_TAG}
+    container_name: spark-master
+    restart: always
+    networks:
+      - spark-net
+    ports:
+      - "8080:8080"
+      - "7077:7077"
+      - "6066:6066"
+
+  spark-slave:
+    hostname: spark-slave
+    image: ${IMAGE_PREFIX}bigdata/spark-slave:${IMAGE_TAG}
+    container_name: spark-slave
+    restart: always
+    networks:
+      - spark-net
+    ports:
+      - "8781:8081"
+    volumes:
+      - /data/projects/:/data/projects/
+    environment:
+      SERVICE_PRECONDITION: "spark-master:7077"
+      EGGROLL_HOME: "/data/projects/fate/eggroll"
+      FATE_PROJECT_BASE: "/data/projects/fate"
+      VIRTUAL_ENV: "/data/projects/python/venv"
+      PYTHONPATH: "/data/projects/fate/:/data/projects/fate/eggroll/python:/data/projects/fate/fate/python:/data/projects/fate/fateflow/python:/data/projects/fate/python"
+      PATH: "/data/projects/python/venv/bin:/opt/hadoop-3.2.3/bin:/opt/hive/bin:/opt/spark-3.1.3-bin-hadoop3.2/bin:/opt/hadoop-3.2.3/bin/:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
