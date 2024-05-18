@@ -5,3 +5,4 @@
 /native-build/.env
 /native-build/cos.yaml
 *.log
+.idea
